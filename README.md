@@ -4,3 +4,39 @@ Este repositório contém uma página web estática que simula a página inicial
 ## Créditos
 
 O layout original foi desenvolvido e disponibilizado por [HTML5 UP](https://html5up.net/). Modificamos e utilizamos este layout de acordo com a licença [Creative Commons](https://html5up.net/license).
+
+## Scripts utilizados
+
+### Execução dos casos de teste do lado do cliente via ferramenta ApacheBench (ab)
+
+#### Caso 1
+
+```bash
+ab -n 10000 -c 500 http://ec2-3-22-114-17.us-east-2.compute.amazonaws.com/
+```
+
+#### Caso 2
+
+```bash
+ab -n 20000 -c 1000 http://ec2-3-22-114-17.us-east-2.compute.amazonaws.com/
+```
+
+### Monitoramento de CPU e memória via ferramenta pidstat
+
+```bash
+pidstat -p $(ps aux | grep "nginx: worker process" | grep -v "grep" | awk '{print $2}') -u -r 1 > cen1amo1.txt
+```
+
+### Obtenção dos picos de CPU e memória do monitoramento feito
+
+#### CPU
+
+```bash
+grep -v 'UID' cen1amo1.txt | awk '{print $8}' | sort -nr | head -n 1
+```
+
+#### Memória
+
+```bash
+grep -v 'UID' cen1amo1.txt | awk '{print $7}' | sort -nr | head -n 1
+```
