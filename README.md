@@ -5,6 +5,54 @@ Este repositório contém uma página web estática que simula a página inicial
 
 O layout original foi desenvolvido e disponibilizado por [HTML5 UP](https://html5up.net/). Modificamos e utilizamos este layout de acordo com a licença [Creative Commons](https://html5up.net/license).
 
+## Configurações aplicadas:
+
+### Cenário 1
+
+```bash
+    sendfile   off;
+    gzip       off;
+```
+
+### Cenário 2
+
+```bash
+    sendfile   off;
+    gzip        on;
+    gzip_types
+      application/javascript
+      text/javascript
+      text/css;
+```
+
+### Cenário 3
+
+```bash
+    sendfile   on;
+    tcp_nopush on;
+    gzip      off;
+```
+
+### Cenário 4
+
+```bash
+    location / {
+        gzip  on;
+        gzip_types
+          application/javascript
+          text/javascript
+          text/css;
+        root   /var/www/html/tech-blog-web-page-example/src;
+        index  index.html index.htm;
+    }
+
+    location /images/ {
+        sendfile   on;
+        tcp_nopush on;
+        alias /var/www/html/tech-blog-web-page-example/src/images/;
+    }
+```
+
 ## Scripts utilizados
 
 ### Execução dos casos de teste do lado do cliente via ferramenta ApacheBench (ab)
