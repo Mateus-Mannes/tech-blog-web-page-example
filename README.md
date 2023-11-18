@@ -42,14 +42,14 @@ O layout original foi desenvolvido e disponibilizado por [HTML5 UP](https://html
           application/javascript
           text/javascript
           text/css;
-        root   /var/www/html/tech-blog-web-page-example/src;
+        root   /var/www/tech-blog-web-page-example/src;
         index  index.html index.htm;
     }
 
     location /images/ {
         sendfile   on;
         tcp_nopush on;
-        alias /var/www/html/tech-blog-web-page-example/src/images/;
+        alias /var/www/tech-blog-web-page-example/src/images/;
     }
 ```
 
