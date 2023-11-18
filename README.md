@@ -1,11 +1,11 @@
 # tech-blog-web-page-example
 Este repositório contém uma página web estática que simula a página inicial de um blog de tecnologia. A página foi criada com o propósito de ser utilizada em um estudo de caso sobre servidores web.
 
-## Créditos
+## 1. Créditos
 
 O layout original foi desenvolvido e disponibilizado por [HTML5 UP](https://html5up.net/). Modificamos e utilizamos este layout de acordo com a licença [Creative Commons](https://html5up.net/license).
 
-## Configurações aplicadas:
+## 2. Configurações aplicadas:
 
 ### Cenário 1
 
@@ -53,7 +53,7 @@ O layout original foi desenvolvido e disponibilizado por [HTML5 UP](https://html
     }
 ```
 
-## Scripts utilizados
+## 3. Scripts utilizados
 
 ### Execução dos casos de teste do lado do cliente via ferramenta ApacheBench (ab)
 
@@ -102,16 +102,65 @@ echo "Testes completados. Resultados salvos em $LOG_FILE."
 pidstat -p $(ps aux | grep "nginx: worker process" | grep -v "grep" | awk '{print $2}') -u -r 1 > cen1amo1.txt
 ```
 
-### Obtenção dos picos de CPU e memória do monitoramento feito
+### Identificação dos picos de CPU e memória (script python)
 
-#### CPU
+```python
+import pandas as pd
 
-```bash
-grep -v 'UID' cen1amo1.txt | awk '{print $8}' | sort -nr | head -n 1
-```
+def extract_cpu_rss(file_path):
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
 
-#### Memória
+    prevcpu = ""
+    prevrss = ""
+    groups = [[]]
+    current_group = 0
 
-```bash
-grep -v 'UID' cen1amo1.txt | awk '{print $7}' | sort -nr | head -n 1
+    i = 0
+    while i < len(lines):
+        line1 = lines[i].strip()
+
+        if '%CPU' in line1 and "Average:" not in line1:
+            time = line1.split()[0]
+            cpu = lines[i + 1].strip().split()[7]
+            rss = lines[i + 4].strip().split()[6]
+
+            if cpu != prevcpu or rss != prevrss:
+                if cpu == "0.00" and groups[current_group]:
+                    groups.append([])
+                    current_group += 1
+
+                if cpu != "0.00":  # Adicionar amostras onde CPU não é zero
+                    groups[current_group].append((time, cpu, rss))
+                prevcpu = cpu
+                prevrss = rss
+
+        i += 1
+
+    return groups
+
+file_path = 'cenario1caso3.txt'
+cpu_rss_groups = extract_cpu_rss(file_path)
+
+# Preparar dados para salvar no Excel
+data_for_excel = []
+
+for i, group in enumerate(cpu_rss_groups):
+    if group:  # Verifica se o grupo não está vazio
+        max_cpu_sample = max(group, key=lambda x: float(x[1]))
+        max_rss_sample = max(group, key=lambda x: int(x[2]))
+        data_for_excel.append({
+            "Grupo": i + 1,
+            "Horário Max CPU": max_cpu_sample[0],
+            "Valor Max CPU": max_cpu_sample[1],
+            "Horário Max RSS": max_rss_sample[0],
+            "Valor Max RSS": max_rss_sample[2]
+        })
+
+# Criar DataFrame e salvar em Excel
+df = pd.DataFrame(data_for_excel)
+excel_filename = "cpu_rss_max_values_3.xlsx"
+df.to_excel(excel_filename, index=False)
+
+print(f"Arquivo '{excel_filename}' salvo com sucesso.")
 ```
