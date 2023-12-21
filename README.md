@@ -1,5 +1,12 @@
 # tech-blog-web-page-example
-Este repositório contém uma página web estática que simula a página inicial de um blog de tecnologia. A página foi criada com o propósito de ser utilizada em um estudo de caso sobre servidores web.
+Este repositório contém uma página web estática que simula a página inicial de um blog de tecnologia.
+
+
+A página foi criada com o propósito de ser utilizada em um estudo de caso sobre servidores web, para a matéria de sistemas operacionais da UDESC,
+chamado `Estudo de caso comparativo entre as configurações Sendfile e Gzip no servidor web Nginx 1.24 em um ambiente Debian 12 sob a perspectiva de requisições por segundo, consumo de CPU e consumo de memória`.
+
+
+O estudo feito se encontra em [estudo.pdf](/estudo.pdf)
 
 ## 1. Créditos
 
